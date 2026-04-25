@@ -8,6 +8,8 @@ Options -Indexes
 
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
-    # If someone hits an uploaded file directly, force download.
-    Header set Content-Disposition "attachment"
+    # Required for Flutter web / browser clients hosted on another domain.
+    Header always set Access-Control-Allow-Origin "https://cloudstore-rho.vercel.app"
+    Header always set Access-Control-Allow-Methods "GET, HEAD, OPTIONS"
+    Header always set Access-Control-Allow-Headers "Origin, Content-Type, Accept, X-Requested-With, X-API-Key"
 </IfModule>

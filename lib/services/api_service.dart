@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 
 class ApiService {
@@ -59,6 +60,49 @@ class ApiService {
       if (e is Exception) rethrow;
       throw Exception('Upload failed: $e');
     }
+  }
+
+  static Future<List<Map<String, dynamic>>> uploadFiles(
+    List<PlatformFile> files,
+    String folderPath,
+  ) async {
+    if (files.isEmpty) return [];
+    final results = <Map<String, dynamic>>[];
+
+    for (final file in files) {
+      try {
+        MultipartFile multipart;
+        if (file.path != null && file.path!.isNotEmpty) {
+          multipart = await MultipartFile.fromFile(
+            file.path!,
+            filename: file.name,
+          );
+        } else if (file.bytes != null) {
+          multipart = MultipartFile.fromBytes(
+            file.bytes!,
+            filename: file.name,
+          );
+        } else {
+          throw Exception('Could not read file: ${file.name}');
+        }
+
+        final formData = FormData.fromMap({
+          'folder_path': folderPath,
+          'file': multipart,
+        });
+        final response = await _dio.post(
+          '/upload.php',
+          data: formData,
+          options: Options(contentType: 'multipart/form-data'),
+        );
+        results.add(_asMap(response.data));
+      } on DioException catch (e) {
+        final body = _asMap(e.response?.data ?? '{}');
+        throw Exception(
+            'Upload failed for ${file.name}: ${body['error'] ?? 'Upload failed'}');
+      }
+    }
+    return results;
   }
 
   static Future<List<Map<String, dynamic>>> listFiles(

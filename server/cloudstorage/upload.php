@@ -23,24 +23,6 @@ if ($file['error'] !== UPLOAD_ERR_OK) {
     exit;
 }
 
-$allowed_mimes = [
-    'image/jpeg',
-    'image/png',
-    'application/pdf',
-    'video/mp4',
-    'application/zip',
-    'application/x-zip-compressed',
-];
-
-$finfo = new finfo(FILEINFO_MIME_TYPE);
-$mime = $finfo->file($file['tmp_name']);
-
-if (!in_array($mime, $allowed_mimes, true)) {
-    http_response_code(400);
-    echo json_encode(['success' => false, 'error' => 'File type not allowed']);
-    exit;
-}
-
 if ($folder_path === '') {
     $target_dir = BASE_DIR;
 } else {

@@ -1,6 +1,7 @@
 // main.dart
 
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:video_player/video_player.dart';
@@ -117,17 +118,17 @@ class _FileManagerPageState extends State<FileManagerPage> {
 
   Future<void> _pickAndUpload() async {
     final result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf', 'mp4', 'zip'],
+      type: FileType.any,
+      allowMultiple: true,
+      withData: kIsWeb,
     );
-    if (result == null || result.files.single.path == null) return;
+    if (result == null || result.files.isEmpty) return;
 
-    final file = File(result.files.single.path!);
-    _showLoading('Uploading...');
+    _showLoading('Uploading ${result.files.length} file(s)...');
     try {
-      await ApiService.uploadFile(file, _currentPath);
+      await ApiService.uploadFiles(result.files, _currentPath);
       if (mounted) Navigator.pop(context);
-      _showSnack('File uploaded');
+      _showSnack('${result.files.length} file(s) uploaded');
       _loadFiles();
     } catch (e) {
       if (mounted) Navigator.pop(context);
