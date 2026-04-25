@@ -72,7 +72,7 @@ class ApiService {
     for (final file in files) {
       try {
         MultipartFile multipart;
-        if (file.path != null && file.path!.isNotEmpty) {
+        if (!kIsWeb && file.path != null && file.path!.isNotEmpty) {
           multipart = await MultipartFile.fromFile(
             file.path!,
             filename: file.name,
