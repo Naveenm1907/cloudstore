@@ -1,6 +1,5 @@
 // main.dart
 
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -237,7 +236,11 @@ class _FileManagerPageState extends State<FileManagerPage> {
     try {
       final filename = item['name'] as String;
 
-      if (Platform.isAndroid || Platform.isIOS) {
+      final useBytesSave = kIsWeb ||
+          defaultTargetPlatform == TargetPlatform.android ||
+          defaultTargetPlatform == TargetPlatform.iOS;
+
+      if (useBytesSave) {
         final bytes = await ApiService.downloadBytes(filePath);
         final saved = await FilePicker.platform.saveFile(
           dialogTitle: 'Save file',
