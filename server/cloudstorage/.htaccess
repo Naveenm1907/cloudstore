@@ -1,0 +1,11 @@
+# .htaccess — placed inside public_html/cloudstorage/
+
+Options -Indexes
+
+<FilesMatch "^(db_config\.php|schema\.sql)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+</IfModule>

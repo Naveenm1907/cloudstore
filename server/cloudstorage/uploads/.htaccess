@@ -1,0 +1,13 @@
+# .htaccess — placed inside public_html/cloudstorage/uploads/
+
+Options -Indexes
+
+<FilesMatch "\.php$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    # If someone hits an uploaded file directly, force download.
+    Header set Content-Disposition "attachment"
+</IfModule>

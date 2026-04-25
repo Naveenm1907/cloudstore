@@ -1,0 +1,8 @@
+-- schema.sql
+
+CREATE TABLE IF NOT EXISTS folder_passwords (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    folder_path VARCHAR(500) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
